@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class DBCommands {
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception, SQLException {
 		
 		String dbUrl = "jdbc:oracle:thin:@h3oracle.ad.psu.edu:1521/orclpdb.ad.psu.edu"; 
 		String username = "tcl5238"; //psu username, exclude the @psu.edu
@@ -19,9 +19,6 @@ public class DBCommands {
 			switch (args[0]) {
 				default:
 					System.out.println("Invalid Command");
-					break;
-				case "test":
-					System.out.println(test() ? "Command Completed Successfully" : "Command Failed");
 					break;
 				case "addCustomer": 
 					java.sql.Date dateOfBirth = java.sql.Date.valueOf(args[5]);
@@ -48,23 +45,28 @@ public class DBCommands {
 					System.out.println(addConditions(Integer.valueOf(args[1]), args[2]) ? "Command Completed Successfully" : "Command Failed");
 					break;
 			}
+			conn.close();
 		}
 		catch (SQLException error) {
 			error.printStackTrace();
 		}
 	}
 
-	public static boolean addCustomer(Connection conn, int SSN, String firstName, String lastName, String contactInfo, java.sql.Date dateOfBirth) {
-		try {
-			Statement stmt = conn.createStatement();
-			String query = "INSERT INTO Customer VALUES (" + SSN + ", '" + firstName+ "', '" + lastName + "', '" + contactInfo + "', " + dateOfBirth + ");";
-			System.out.println(query);
-			stmt.executeUpdate(query);  
-			return true;
-		} catch (SQLException error) {
-			error.printStackTrace();
-			return false;
-		}
+	public static boolean addCustomer(Connection conn, int SSN, String firstName, String lastName, String contactInfo, java.sql.Date dateOfBirth) throws SQLException {
+		String sql = "INSERT INTO customer (ssn, firstName, lastName, contactInfo, dateOfBirth) VALUES (?, ?, ?, ?, ?)";
+		PreparedStatement statement = conn.prepareStatement(sql);
+
+		// Set the parameter values for the PreparedStatement object
+		statement.setInt(1, SSN);
+		statement.setString(2, firstName);
+		statement.setString(3, lastName);
+		statement.setString(4, contactInfo);
+		statement.setDate(5, dateOfBirth);
+
+		// Execute the query
+		int rowsInserted = statement.executeUpdate();
+		System.out.println(rowsInserted);
+		return true;
 	}
 
 	public static boolean addPolicy(int policyID, String coverage, int monthlyPayment, java.sql.Date startDate, java.sql.Date endDate, String owner) {
@@ -92,18 +94,20 @@ public class DBCommands {
 		return false;
 	}
 
-	public static String listPeople() {
-
+	public static String listPeople(Connection conn) throws SQLException {
+		String sql = "select * from customer";
+		Statement statement = conn.createStatement();
+		ResultSet result = statement.executeQuery(sql);
+		System.out.println(result);
+		while (result.next()) {
+			System.out.println(result.getInt("ssn"));
+		}
 		return "";
 	}
 
 	public static String listPolicies() {
 
 		return "";
-	}
-
-	public static boolean test() {
-		return true;
 	}
 }
 
