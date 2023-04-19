@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import java.sql.*;
 
 public class DBCommands {
@@ -43,6 +46,9 @@ public class DBCommands {
 					break;
 				case "addConditions":
 					System.out.println(addConditions(Integer.valueOf(args[1]), args[2]) ? "Command Completed Successfully" : "Command Failed");
+					break;
+				case "browseCustomer":
+					browseCustomer(conn);
 					break;
 			}
 			conn.close();
@@ -94,15 +100,27 @@ public class DBCommands {
 		return false;
 	}
 
-	public static String listPeople(Connection conn) throws SQLException {
+	public static void browseCustomer(Connection conn) throws SQLException {
+		for (String person : listPeople(conn)) {
+			System.out.println(person);
+			System.out.println();
+		}
+	}
+
+	public static List<String> listPeople(Connection conn) throws SQLException {
+		List<String> people = new ArrayList<String>();
 		String sql = "select * from customer";
 		Statement statement = conn.createStatement();
 		ResultSet result = statement.executeQuery(sql);
 		System.out.println(result);
 		while (result.next()) {
-			System.out.println(result.getInt("ssn"));
+			people.add(String.format(
+				"SSN: %d\nName: %s %s\nContact: %s\nDOB: %s",
+				result.getInt("ssn"), result.getString("firstName"), result.getString("lastName"),
+				result.getString("contactInfo"), result.getDate("dateofbirth").toString()
+			));
 		}
-		return "";
+		return people;
 	}
 
 	public static String listPolicies() {
