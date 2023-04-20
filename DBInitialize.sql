@@ -15,12 +15,14 @@ create table customer (
 );
 
 create table policy (
-    policy_ID varchar (20),
-    coverage int not null,
+    policy_ID int,
+    --policy_ID varchar (20),
+    coverage varchar (20) not null,
     monthly_payment int not null,
     start_date date not null,
     end_date date,
     owner int,
+    --owner varchar (20),
 	policy_type varchar (10),
     primary key (policy_ID),
     foreign key (owner) references customer(ssn)
@@ -32,7 +34,8 @@ create table car_info (
     make varchar (20) not null,
     model varchar (20) not null,
     year numeric (4, 0) not null,
-    policy_ID varchar (20),
+    --policy_ID varchar (20),
+    policy_ID int,
     primary key (vin),
     foreign key (policy_ID) references policy
 );
@@ -40,18 +43,21 @@ create table car_info (
 create table home_info (
     home_ID int,
     address varchar (30) not null,
-    area varchar (20) not null,
+    --area varchar (20) not null,
+    area int not null, 
     bedCount int not null,
     bathCount int not null,
     price int not null,
-    policy_ID varchar (20),
+    --policy_ID varchar (20),
+    policy_ID int,
     primary key (home_ID),
     foreign key (policy_ID) references policy
 );
 
 create table life_info (
+    policy_ID, int,
+    --policy_ID varchar (20),
     life_ID int,
-    policy_ID varchar (20),
     benefits int,
     primary key (life_ID),
     foreign key (policy_ID) references policy,
