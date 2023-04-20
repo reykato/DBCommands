@@ -70,3 +70,9 @@ create table conditions (
     primary key (life_ID, existing_conditions),
     foreign key (life_ID) references life_info
 );
+
+insert into customer values (222004444, 'Rodney', 'Dangerfield', '3232 Wallaby Way', '19-APR-2007');
+insert into customer values (777220000, 'Max', 'Khezrimotlagh', '717-223-4495', '31-DEC-1975');
+insert into customer values (777334444, 'Linda', 'Chang', 'lrc4532@psu.edu', '02-FEB-2002');
+insert into customer values (111448888, 'Wilhelm', 'Blum', 'W257 Olmsted', '11-NOV-1988');
+insert into customer values (888442222, 'Melissa', 'Null', '22 Areba Av, Middletown, PA', '07-MAR-1941');
