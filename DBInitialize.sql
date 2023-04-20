@@ -25,7 +25,7 @@ create table policy (
     --owner varchar (20),
 	policy_type varchar (10),
     primary key (policy_ID),
-    foreign key (owner) references customer(ssn)
+    foreign key (owner) references customer(ssn) on delete cascade
 );
 
 create table car_info (
@@ -37,7 +37,7 @@ create table car_info (
     --policy_ID varchar (20),
     policy_ID int,
     primary key (vin),
-    foreign key (policy_ID) references policy
+    foreign key (policy_ID) references policy on delete cascade
 );
 
 create table home_info (
@@ -51,7 +51,7 @@ create table home_info (
     --policy_ID varchar (20),
     policy_ID int,
     primary key (home_ID),
-    foreign key (policy_ID) references policy
+    foreign key (policy_ID) references policy on delete cascade
 );
 
 create table life_info (
@@ -60,15 +60,15 @@ create table life_info (
     life_ID int,
     benefits int,
     primary key (life_ID),
-    foreign key (policy_ID) references policy,
-    foreign key (benefits) references customer(ssn)
+    foreign key (policy_ID) references policy on delete cascade,
+    foreign key (benefits) references customer(ssn) on delete cascade
 );
 
 create table conditions (
     life_ID int,
     existing_conditions varchar (30),
     primary key (life_ID, existing_conditions),
-    foreign key (life_ID) references life_info
+    foreign key (life_ID) references life_info on delete cascade
 );
 
 insert into customer values (222004444, 'Rodney', 'Dangerfield', '3232 Wallaby Way', '19-APR-2007');
