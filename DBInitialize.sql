@@ -79,6 +79,7 @@ insert into customer values (888442222, 'Melissa', 'Null', '22 Areba Av, Middlet
 insert into customer values (999112222, 'Kramer', 'Khezrimotlagh', '717-223-4495', '31-DEC-1975');
 insert into customer values (444998888, 'Wally', 'Null', '22 Areba Av, Middletown, PA', '07-MAR-1941');
 insert into customer values (555776666, 'Madeline', 'Blum', '44 Halmer Rd, Lumstown, PA', '12-FEB-1990');
+insert into customer values (1234, 'Tyler', 'Lindsay', 'tyty4646@foxdev.net', '12-FEB-1999');
 
 insert into policy values (0, '$22,500', 55, '12-JUN-2007', '04-JUN-2034', 222004444, 'home_info');
 insert into policy values (1, '$55,220', 900, '03-FEB-2023', '03-JUN-2024', 777220000, 'home_info');
