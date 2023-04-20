@@ -76,6 +76,9 @@ insert into customer values (777220000, 'Max', 'Khezrimotlagh', '717-223-4495', 
 insert into customer values (777334444, 'Linda', 'Chang', 'lrc4532@psu.edu', '02-FEB-2002');
 insert into customer values (111448888, 'Wilhelm', 'Blum', 'W257 Olmsted', '11-NOV-1988');
 insert into customer values (888442222, 'Melissa', 'Null', '22 Areba Av, Middletown, PA', '07-MAR-1941');
+insert into customer values (999112222, 'Kramer', 'Khezrimotlagh', '717-223-4495', '31-DEC-1975');
+insert into customer values (444998888, 'Wally', 'Null', '22 Areba Av, Middletown, PA', '07-MAR-1941');
+insert into customer values (555776666, 'Madeline', 'Blum', '44 Halmer Rd, Lumstown, PA', '12-FEB-1990');
 
 insert into policy values (0, '$22,500', 55, '12-JUN-2007', '04-JUN-2034', 222004444, 'home_info');
 insert into policy values (1, '$55,220', 900, '03-FEB-2023', '03-JUN-2024', 777220000, 'home_info');
@@ -83,11 +86,26 @@ insert into policy values (2, '$800,840', 1200, '08-JAN-1960', '19-NOV-1981', 88
 insert into policy values (3, '$5,000', 400, '27-AUG-2007', '27-AUG-2024', 222004444, 'car_info');
 insert into policy values (4, '$12,000', 1100, '23-JUL-1999', '17-JUN-2008', 777334444, 'car_info');
 insert into policy values (5, '$40,000', 3900, '12-APR-1973', '12-APR-2001', 111448888, 'car_info');
+insert into policy values (6, '$120,000', 200, '31-DEC-1975', null, 777220000, 'life_info');
+insert into policy values (7, '$12,000', 3900, '07-MAR-1941', null, 888442222, 'life_info');
+insert into policy values (8, '240,000', 340, '09-NOV-2004', null, 111448888, 'life_info');
 
-insert into home_info values(0, '46 Dauphin St, Campbelltown', 4200, 4, 3, 1250000, 0); 
-insert into home_info values(1, '2017 Selene Av, Moravia', 800, 2, 1, 600000, 1); 
-insert into home_info values(2, '1313 Lobotomy Lane, Chalk', 2500, 3, 2, 65000, 2); 
+insert into home_info values(0, '46 Dauphin St, Campbelltown', 4200, 4, 3, 1250000, 0);
+insert into home_info values(1, '2017 Selene Av, Moravia', 800, 2, 1, 600000, 1);
+insert into home_info values(2, '1313 Lobotomy Lane, Chalk', 2500, 3, 2, 65000, 2);
 
-insert into car_info values('1G1YM3D78E9132314', 24000, 'Ford', 'Focus', 2007, 3); 
-insert into car_info values('F77WH2994LF282F88', 80000, 'Buick', 'LeSabre', 1999, 4); 
+insert into car_info values('1G1YM3D78E9132314', 24000, 'Ford', 'Focus', 2007, 3);
+insert into car_info values('F77WH2994LF282F88', 80000, 'Buick', 'LeSabre', 1999, 4);
 insert into car_info values('JJ3K4J5OS889W3J48', 4000, 'Maserati', 'Mountaineer', 2022, 5);
+
+insert into life_info values(6, 0, 999112222);
+insert into life_info values(7, 1, 444998888);
+insert into life_info values(8, 2, 555776666);
+
+insert into conditions values(0, 'Sniffles');
+insert into conditions values(0, 'Cough');
+insert into conditions values(1, 'Diabetes');
+insert into conditions values(1, 'Kidney failure');
+insert into conditions values(1, 'Myelitis');
+insert into conditions values(1, 'Encephalitis');
+insert into conditions values(1, 'Entropic migraine');
