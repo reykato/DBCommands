@@ -55,7 +55,7 @@ create table home_info (
 );
 
 create table life_info (
-    policy_ID, int,
+    policy_ID int,
     --policy_ID varchar (20),
     life_ID int,
     benefits int,
