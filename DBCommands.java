@@ -50,6 +50,9 @@ public class DBCommands {
 				case "browseCustomer":
 					browseCustomer(conn);
 					break;
+				case "browsePolicy":
+					browsePolicy(conn);
+					break;
 			}
 			conn.close();
 		}
@@ -112,20 +115,73 @@ public class DBCommands {
 		String sql = "select * from customer";
 		Statement statement = conn.createStatement();
 		ResultSet result = statement.executeQuery(sql);
-		System.out.println(result);
 		while (result.next()) {
 			people.add(String.format(
 				"SSN: %d\nName: %s %s\nContact: %s\nDOB: %s",
 				result.getInt("ssn"), result.getString("firstName"), result.getString("lastName"),
-				result.getString("contactInfo"), result.getDate("dateofbirth").toString()
+				result.getString("contactInfo"), result.getDate("dateofbirth")
 			));
 		}
 		return people;
 	}
 
-	public static String listPolicies() {
+	public static void browsePolicy(Connection conn) throws SQLException {
+		for (String policy : listPolicies(conn)) {
+			System.out.println(policy);
+			System.out.println();
+		}
+	}
 
-		return "";
+	private static String formatPolicy(ResultSet result) throws SQLException {
+		return String.format(
+			"Policy id: %d\nOwner SSN:%d\nCovered from %s to %s\nCoverage: %s\nMonthly payment: $%d\nPolicy type: %s",
+			result.getInt("policy_id"), result.getInt("owner"),
+			result.getDate("start_date"), result.getDate("end_date"),
+			result.getString("coverage"), result.getInt("monthly_payment"),
+			getPolicyType(result)
+		);
+	}
+
+	private static String getPolicyType(ResultSet result) throws SQLException {
+		String[] parts = result.getString("policy_type").split("_");
+		return parts[0];
+	}
+
+	public static List<String> listPolicies(Connection conn) throws SQLException {
+		List<String> policies = new ArrayList<String>();
+		
+		String home_sql = "select * from policy natural join home_info";
+		ResultSet result = conn.createStatement().executeQuery(home_sql);
+		while (result.next()) {
+			policies.add(formatPolicy(result) + String.format(
+				"\nAddress: %s\nArea: %d square feet\nBeds: %d Baths: %d\nPrice: $%d",
+				result.getString("address"), result.getInt("area"),
+				result.getInt("bedcount"), result.getInt("bathcount"),
+				result.getInt("price")
+			));
+		}
+		
+		String car_sql = "select * from policy natural join car_info";
+		result = conn.createStatement().executeQuery(car_sql);
+		while (result.next()) {
+			policies.add(formatPolicy(result) + String.format(
+				"\nVIN: %s\nMileage: %d per year\nYear, make, and model: %d %s %s",
+				result.getString("VIN"), result.getInt("mileageperyear"),
+				result.getInt("year"), result.getString("make"), result.getString("model")
+			));
+		}
+		
+		String life_sql = "select * from policy natural join life_info join conditions";
+		result = conn.createStatement().executeQuery(life_sql);
+		String conditions_sql = "select * from life_info "
+		while (result.next()) {
+			policies.add(formatPolicy(result) + String.format(
+				"\nVIN: %s\nMileage: %d per year\nYear, make, and model: %d %s %s",
+				result.getString("VIN"), result.getInt("mileageperyear"),
+				result.getInt("year"), result.getString("make"), result.getString("model")
+			));
+		}
+		return policies;
 	}
 }
 
