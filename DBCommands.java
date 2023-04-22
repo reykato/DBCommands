@@ -171,14 +171,12 @@ public class DBCommands {
 			));
 		}
 		
-		String life_sql = "select * from policy natural join life_info join conditions";
+		String life_sql = "select * from policy natural join life_info natural left join (select life_id, LISTAGG(existing_conditions, ', ') as existing_conditions from conditions group by life_id)";
 		result = conn.createStatement().executeQuery(life_sql);
-		String conditions_sql = "select * from life_info "
 		while (result.next()) {
 			policies.add(formatPolicy(result) + String.format(
-				"\nVIN: %s\nMileage: %d per year\nYear, make, and model: %d %s %s",
-				result.getString("VIN"), result.getInt("mileageperyear"),
-				result.getInt("year"), result.getString("make"), result.getString("model")
+				"\nBenefits: %d\nExisting conditions: %s",
+				result.getInt("benefits"), result.getString("existing_conditions")
 			));
 		}
 		return policies;
