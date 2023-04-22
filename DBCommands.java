@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.sql.*;
@@ -52,6 +53,9 @@ public class DBCommands {
 					break;
 				case "browsePolicy":
 					browsePolicy(conn);
+					break;
+				case "searchCustomer":
+					searchCustomer(conn, args);
 					break;
 			}
 			conn.close();
@@ -110,17 +114,21 @@ public class DBCommands {
 		}
 	}
 
+	private static String formatPerson(ResultSet result) throws SQLException {
+		return String.format(
+			"SSN: %d\nName: %s %s\nContact: %s\nDOB: %s",
+			result.getInt("ssn"), result.getString("firstName"), result.getString("lastName"),
+			result.getString("contactInfo"), result.getDate("dateofbirth")
+		);
+	}
+
 	public static List<String> listPeople(Connection conn) throws SQLException {
 		List<String> people = new ArrayList<String>();
 		String sql = "select * from customer";
 		Statement statement = conn.createStatement();
 		ResultSet result = statement.executeQuery(sql);
 		while (result.next()) {
-			people.add(String.format(
-				"SSN: %d\nName: %s %s\nContact: %s\nDOB: %s",
-				result.getInt("ssn"), result.getString("firstName"), result.getString("lastName"),
-				result.getString("contactInfo"), result.getDate("dateofbirth")
-			));
+			people.add(formatPerson(result));
 		}
 		return people;
 	}
@@ -180,6 +188,17 @@ public class DBCommands {
 			));
 		}
 		return policies;
+	}
+
+	public static void searchCustomer(Connection conn, String[] args) throws SQLException {
+		String sql = "select * from customer where ";// where SSN like '%?%' and firstname like '%?%' and lastname like '%?%' and contact like '%?%'";
+
+		sql += String.join(" ", Arrays.asList(args).subList(1, args.length));
+		ResultSet result = conn.createStatement().executeQuery(sql);
+		while (result.next()) {
+			System.out.println(formatPerson(result));
+			System.out.println();
+		}
 	}
 }
 
