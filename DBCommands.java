@@ -57,6 +57,9 @@ public class DBCommands {
 				case "searchCustomer":
 					searchCustomer(conn, args);
 					break;
+				case "searchPolicy":
+					searchPolicy(conn, args);
+					break;
 			}
 			conn.close();
 		}
@@ -150,6 +153,32 @@ public class DBCommands {
 		);
 	}
 
+	private static String formatHomePolicy(ResultSet result) throws SQLException {
+		return formatPolicy(result) + String.format(
+			"\nAddress: %s\nArea: %d square feet\nBeds: %d Baths: %d\nPrice: $%d",
+			result.getString("address"), result.getInt("area"),
+			result.getInt("bedcount"), result.getInt("bathcount"),
+			result.getInt("price")
+		);
+	}
+
+	private static String formatCarPolicy(ResultSet result) throws SQLException {
+		return 	formatPolicy(result) + String.format(
+			"\nVIN: %s\nMileage: %d per year\nYear, make, and model: %d %s %s",
+			result.getString("VIN"), result.getInt("mileageperyear"),
+			result.getInt("year"), result.getString("make"), result.getString("model")
+		);
+	}
+
+	private static String formatLifePolicy(ResultSet result) throws SQLException {
+		return formatPolicy(result) + String.format(
+			"\nBenefits: %d\nExisting conditions: %s",
+			result.getInt("benefits"), result.getString("existing_conditions")
+		);
+	}
+
+
+
 	private static String getPolicyType(ResultSet result) throws SQLException {
 		String[] parts = result.getString("policy_type").split("_");
 		return parts[0];
@@ -161,43 +190,90 @@ public class DBCommands {
 		String home_sql = "select * from policy natural join home_info";
 		ResultSet result = conn.createStatement().executeQuery(home_sql);
 		while (result.next()) {
-			policies.add(formatPolicy(result) + String.format(
-				"\nAddress: %s\nArea: %d square feet\nBeds: %d Baths: %d\nPrice: $%d",
-				result.getString("address"), result.getInt("area"),
-				result.getInt("bedcount"), result.getInt("bathcount"),
-				result.getInt("price")
-			));
+			policies.add(formatHomePolicy(result));
 		}
 		
 		String car_sql = "select * from policy natural join car_info";
 		result = conn.createStatement().executeQuery(car_sql);
 		while (result.next()) {
-			policies.add(formatPolicy(result) + String.format(
-				"\nVIN: %s\nMileage: %d per year\nYear, make, and model: %d %s %s",
-				result.getString("VIN"), result.getInt("mileageperyear"),
-				result.getInt("year"), result.getString("make"), result.getString("model")
-			));
+			policies.add(formatCarPolicy(result));
 		}
 		
 		String life_sql = "select * from policy natural join life_info natural left join (select life_id, LISTAGG(existing_conditions, ', ') as existing_conditions from conditions group by life_id)";
 		result = conn.createStatement().executeQuery(life_sql);
 		while (result.next()) {
-			policies.add(formatPolicy(result) + String.format(
-				"\nBenefits: %d\nExisting conditions: %s",
-				result.getInt("benefits"), result.getString("existing_conditions")
-			));
+			policies.add(formatLifePolicy(result));
 		}
 		return policies;
 	}
 
 	public static void searchCustomer(Connection conn, String[] args) throws SQLException {
-		String sql = "select * from customer where ";// where SSN like '%?%' and firstname like '%?%' and lastname like '%?%' and contact like '%?%'";
+		String sql = "select * from customer where ";
+
+		if (args.length < 2) {
+			throw new RuntimeException("You must provide a conditions to search customers for.");
+		}
 
 		sql += String.join(" ", Arrays.asList(args).subList(1, args.length));
 		ResultSet result = conn.createStatement().executeQuery(sql);
 		while (result.next()) {
 			System.out.println(formatPerson(result));
 			System.out.println();
+		}
+	}
+
+	public static void searchHomePolicy(Connection conn, String[] args) throws SQLException {
+		String sql = "select * from policy natural join home_info where policy_type = 'home_info' and ";
+
+		sql += String.join(" ", Arrays.asList(args).subList(2, args.length));
+		ResultSet result = conn.createStatement().executeQuery(sql);
+		while (result.next()) {
+			System.out.println(formatHomePolicy(result));
+			System.out.println();
+		}
+	}
+
+	public static void searchCarPolicy(Connection conn, String[] args) throws SQLException {
+		String sql = "select * from policy natural join car_info where policy_type = 'car_info' and ";
+
+		sql += String.join(" ", Arrays.asList(args).subList(2, args.length));
+		ResultSet result = conn.createStatement().executeQuery(sql);
+		while (result.next()) {
+			System.out.println(formatCarPolicy(result));
+			System.out.println();
+		}
+	}
+
+	public static void searchLifePolicy(Connection conn, String[] args) throws SQLException {
+		String sql = "select * from policy natural join life_info natural left join (select life_id, LISTAGG(existing_conditions, ', ') as existing_conditions from conditions group by life_id) where policy_type = 'life_info' and ";
+		sql += String.join(" ", Arrays.asList(args).subList(2, args.length));
+		
+		ResultSet result = conn.createStatement().executeQuery(sql);
+		while (result.next()) {
+			System.out.println(formatLifePolicy(result));
+			System.out.println();
+		}
+	}
+
+	public static void searchPolicy(Connection conn, String[] args) throws SQLException {
+		if (args.length < 2) throw new RuntimeException("The second argument after 'searchPolicy' must be one of [any | home | car | life].");
+		switch(args[1]) {
+			case "any":
+				searchHomePolicy(conn, args);
+				searchCarPolicy(conn, args);
+				searchLifePolicy(conn, args);
+				break;
+			case "home":
+				searchHomePolicy(conn, args);
+				break;
+			case "car":
+				searchCarPolicy(conn, args);
+				break;
+			case "life":
+				searchLifePolicy(conn, args);
+				break;
+			case "default":
+				throw new RuntimeException("The second argument after 'searchPolicy' must be one of (any | home | car | life).");
 		}
 	}
 }
