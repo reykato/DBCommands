@@ -5,6 +5,7 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "java_path\\ojdbc11.jar",
-        "ojdbc11.jar"
+        "ojdbc11.jar",
+        "ojdbc11-23.2.0.0.jar"
     ]
 }
