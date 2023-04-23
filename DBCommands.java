@@ -64,33 +64,17 @@ public class DBCommands {
 					java.sql.Date newDateOfBirth = java.sql.Date.valueOf(args[6]);
 					System.out.println(editCustomer(conn, Integer.valueOf(args[1]), Integer.valueOf(args[2]), args[3], args[4], args[5], newDateOfBirth) ? "Command Completed Successfully" : "Command Failed");
 					break;
-				case "editPolicy":
-					java.sql.Date newStartDate = java.sql.Date.valueOf(args[5]);
-					java.sql.Date newEndDate = java.sql.Date.valueOf(args[6]);
-					System.out.println(editPolicy(conn, Integer.valueOf(args[1]), Integer.valueOf(args[2]), args[3], Integer.valueOf(args[4]),
-						newStartDate, newEndDate, args[7], args[8]) ? "Command Completed Successfully" : "Command Failed");
-					break;
 				case "removeCustomer":
 					System.out.println(removeCustomer(conn, Integer.valueOf(args[1])) ? "Command Completed Successfully" : "Command Failed");
 					break;
 				case "removePolicy":
 					System.out.println(removePolicy(conn, Integer.valueOf(args[1])) ? "Command Completed Successfully" : "Command Failed");
 					break;
-				case "editCustomer":
-					java.sql.Date newDateOfBirth = java.sql.Date.valueOf(args[6]);
-					System.out.println(editCustomer(conn, Integer.valueOf(args[1]), Integer.valueOf(args[2]), args[3], args[4], args[5], newDateOfBirth) ? "Command Completed Successfully" : "Command Failed");
-					break;
 				case "editPolicy":
 					java.sql.Date newStartDate = java.sql.Date.valueOf(args[5]);
 					java.sql.Date newEndDate = java.sql.Date.valueOf(args[6]);
 					System.out.println(editPolicy(conn, Integer.valueOf(args[1]), Integer.valueOf(args[2]), args[3], Integer.valueOf(args[4]),
 						newStartDate, newEndDate, args[7], args[8]) ? "Command Completed Successfully" : "Command Failed");
-					break;
-				case "removeCustomer":
-					System.out.println(removeCustomer(conn, Integer.valueOf(args[1])) ? "Command Completed Successfully" : "Command Failed");
-					break;
-				case "removePolicy":
-					System.out.println(removePolicy(conn, Integer.valueOf(args[1])) ? "Command Completed Successfully" : "Command Failed");
 					break;
 			}
 			conn.close();
@@ -220,49 +204,6 @@ public class DBCommands {
 			result.getInt("ssn"), result.getString("firstName"), result.getString("lastName"),
 			result.getString("contactInfo"), result.getDate("dateofbirth")
 		);
-	}
-
-	public static boolean editCustomer(Connection conn, int SSN, int newSSN, String firstName, String lastName, String contactInfo, java.sql.Date dateOfBirth) throws SQLException {
-		String sql = "UPDATE customer SET ssn = ?, firstName = ?, lastName = ?, contactInfo = ?, dateOfBirth = ? WHERE ssn = ?";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-
-		stmt.setInt(1, newSSN);
-		stmt.setString(2, firstName);
-		stmt.setString(3, lastName);
-		stmt.setString(4, contactInfo);
-		stmt.setDate(5, dateOfBirth);
-		stmt.setInt(6, SSN);
-		return stmt.executeUpdate() != 0;
-	}
-
-	public static boolean editPolicy(Connection conn, int policyID, int newPolicyID, String coverage, int monthlyPayment, java.sql.Date startDate, java.sql.Date endDate, String owner, String policyType) throws SQLException {
-		String sql = "UPDATE customer SET policy_ID = ?, coverage = ?, monthly_payment = ?, start_date = ?, end_date = ?, owner = ?, policy_type = ? WHERE policyID = ?";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-
-		stmt.setInt(1, newPolicyID);
-		stmt.setString(2, coverage);
-		stmt.setInt(3, monthlyPayment);
-		stmt.setDate(4, startDate);
-		stmt.setDate(5, endDate);
-		stmt.setString(6, owner);
-		stmt.setString(7, policyType);
-		stmt.setInt(8, policyID);
-		return stmt.executeUpdate() != 0;
-	}
-
-	public static boolean removeCustomer(Connection conn, int SSN) throws SQLException {
-		String sql = "DELETE FROM customer WHERE ssn = ?";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, SSN);
-		System.out.println("about to execute removeCustomer");
-		return stmt.executeUpdate() != 0;
-	}
-
-	public static boolean removePolicy(Connection conn, int policyID) throws SQLException {
-		String sql = "DELETE FROM policy WHERE policy_id = ?";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, policyID);
-		return stmt.executeUpdate() != 0;
 	}
 
 	public static boolean editCustomer(Connection conn, int SSN, int newSSN, String firstName, String lastName, String contactInfo, java.sql.Date dateOfBirth) throws SQLException {
